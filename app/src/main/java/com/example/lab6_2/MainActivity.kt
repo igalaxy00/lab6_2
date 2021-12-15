@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import java.net.URL
+import java.util.concurrent.Executors.newFixedThreadPool
 
 class MainActivity : AppCompatActivity() {
     private lateinit var executor: ExecutorService
@@ -35,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         executor.shutdown()
     }
 
-    private fun load() {
-        executor = Executors.newFixedThreadPool(1)
+     private fun load() {
+         executor = For_Exec().executor
         executor.execute {
              URL("https://i.ibb.co/BPDWVhj/unnamed.jpg")
                  .openConnection().getInputStream().use {
