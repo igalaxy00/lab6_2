@@ -13,22 +13,20 @@ import java.util.concurrent.Executors.newFixedThreadPool
 
 class MainActivity : AppCompatActivity() {
     private lateinit var executor: ExecutorService
-    private val bitmapData = MutableLiveData<Bitmap>()
-    private lateinit var imageView : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        imageView  = findViewById(R.id.imageView)
+       executor = For_Exec().executor
+        executor.execute {
+            val url = URL("https://i.ibb.co/BPDWVhj/unnamed.jpg")
+            val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
-        if (imageView.drawable == null) {
-            load()
-        }
-        bitmapData.observe(this) {
-            if (it != null) {
-                imageView.setImageBitmap(it)
+            runOnUiThread {
+                findViewById<ImageView>(R.id.imageView).setImageBitmap(bitmap)
             }
         }
+
     }
 
     override fun onDestroy() {
@@ -36,15 +34,4 @@ class MainActivity : AppCompatActivity() {
         executor.shutdown()
     }
 
-     private fun load() {
-         executor = For_Exec().executor
-        executor.execute {
-             URL("https://i.ibb.co/BPDWVhj/unnamed.jpg")
-                 .openConnection().getInputStream().use {
-                val bitmap = BitmapFactory.decodeStream(it)
-                bitmapData.postValue(bitmap)
-            }
-        }
-
-    }
 }
